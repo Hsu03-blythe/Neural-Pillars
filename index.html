@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Anatomical Archive</title>
+    <!-- To get desired font styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* I chose this color to look like an old parchment, which gives a vintage and scholarly feel to the website. It also provides a warm contrast against the dark background, making the text easier to read while maintaining the overall aesthetic of an ancient archive. */
+        :root {
+            --parchment: #e8dfd1;
+            --ink-dark: #1a1510;
+            --ink-red: #8b0000;
+            --bg-deep: #0a0a0a;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg-deep);
+            color: var(--parchment);
+            font-family: 'EB Garamond', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Header section */
+        header {
+            padding: 60px 20px 20px;
+            text-align: center;
+            border-bottom: 1px double var(--ink-red);
+            margin-bottom: 40px;
+            width: 80%;
+        }
+
+        .title-main {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2rem;
+            font-style: italic;
+            letter-spacing: 3px;
+            margin: 0;
+        }
+
+        /* --- The Brain Visualization --- */
+       
+        .stage {
+            position: relative; /* This is needed to position the data node absolutely within this container */
+            width: 40vw;
+            max-width: 600px;
+            padding: 40px;
+            background: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
+            border-radius: 50%;
+            box-shadow: inset 0 0 100px #000;
+        }
+
+        svg { width: 100%; height: auto; overflow: visible; } /* this allows the SVG to scale responsively while maintaining its aspect ratio, and ensures that any parts of the brain that extend beyond the initial viewBox are still visible. */
+
+        .brain-part {
+            fill: var(--ink-dark);
+            stroke: var(--parchment);
+            stroke-width: 1;
+            stroke-linejoin: round; 
+            filter: drop-shadow(0 0 1px rgba(0,0,0,1));
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: help;
+            opacity: 0.2; /* This is the ideal opacity or its will be overlapped */
+            z-index: 100;
+        }
+
+        /* --- Interaction: The "Illumination" --- */
+        .brain-part:hover {
+            opacity: 1;
+            fill: #1a1a1a;
+            stroke: #ffffff; 
+            stroke-width: 4;
+            filter: 
+                drop-shadow(0 0 2px #fff) 
+                drop-shadow(0 0 15px var(--ink-red));
+            
+            transform: scale(1.005); /* Slightly enlarge the hovered part for emphasis */
+            z-index: 1000;
+        }
+
+        
+        #data-node {
+            position: fixed;
+            bottom: 50px;
+            left: 30%;
+            transform: translateX(-50%) translateY(20px); 
+            width: 300px;
+            max-width: 40vw;
+            text-align: center;
+            background: rgba(10, 10, 10, 0.98);
+            border: 1px solid #3d3225;
+            padding: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            
+            /* I added this because there were ghost text and cursor interaction issues when the node was hidden. This way, the node is still there but completely non-interactive and invisible until activated.   */
+            opacity: 0;
+            visibility: hidden; 
+            pointer-events: none; 
+            
+            transition: 
+                opacity 0.4s ease, 
+                transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                visibility 0.4s;
+        }
+
+        #data-node.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .node-label {
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--ink-red);
+            margin-bottom: 10px;
+        }
+
+        .node-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3d3225;
+            display: inline-block;
+            padding: 0 20px 5px;
+        }
+
+        .node-desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #a89f8d;
+            font-style: italic;
+        }
+
+        footer {
+            width: 100%;
+            margin: 60px auto 0;
+            padding: 32px 0 18px 0;
+            background: rgba(10, 10, 10, 0.7);
+            color: var(--parchment);
+            text-align: center;
+            font-family: 'EB Garamond', serif;
+            border-top: 1px solid rgba(139, 0, 0, 0.6);
+            box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.65);
+        }
+        .footer-links {
+            margin-bottom: 10px;
+        }
+        .footer-links a {
+            color: var(--parchment);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin: 0 10px;
+            transition: color 0.2s;
+            letter-spacing: 1px;
+        }
+        .footer-links a:hover {
+            color: var(--ink-red);
+            text-shadow: 0 0 6px #fff2;
+        }
+        .footer-sep {
+            color: #a89f8d;
+            font-size: 1.2rem;
+            margin: 0 4px;
+        }
+        .footer-copy {
+            font-size: 0.95rem;
+            color: #a89f8d;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="title-main">NEURALIS ARCHIVUM</h1>
+        <p>A study of the cerebral topography and its functional divisions.</p>
+    </header>
+
+    <div class="stage">
+            <svg width="896" height="744" viewBox="0 0 896 744" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path id="occipital" class="brain-part" d="M674 377.5L673 388L672.5 389.5H675L685.5 391L693 393L698.5 397L703.5 402.5L706.5 407L708.5 410.5L714 414.5L719.5 417.5L723 418.5H729H738H747L753.5 417.5L760 415L766 411.5L772.5 409H775L782 408.5L787.5 409L791.5 410L796.5 412.5L801.5 413L808.5 412.5L817 410L821 408.5L825.5 407L831.5 404.5L835 403.5L842 401.5L847 401L856.5 398L861.5 395.5L865 392.5L869.5 387.5L871.5 383L874.5 377L877.5 370L880.5 363L884.5 355L888 349.5L890.5 343.5L892.5 337L893 334.5V326.5L891.5 321L890 315.5L888 310.5L886.5 305L886 300.5L888 298.5L891 295L893.5 290L894.5 284.5L895 278.5L894.5 273L894 266L893 260.5L891 255L887 248L883 242.5L877.5 238L872.5 234.5L869 232.5L865.5 229.5C864.333 228.667 862 226.9 862 226.5C862 226.1 861 225 860.5 224.5L858.5 221.5L857 218L854 211L852 204L849.5 198.5L846 193.5L844 191L840 186.5L835.5 182L832.5 179.5L826.5 176.5L824 175.5L821.5 174.5L819 173L817 172L816 173.5L814.5 175.5L812 178.5L808.5 182L806 183.5L804.5 183L804 181V178L804.5 175.5V173H804L802.5 175.5L800.5 179L799 183L798 190L797.5 194V199.5V202.5L798 204V205C798 206.2 798.333 207.833 798.5 208.5H800L800.5 210V219L798 227L795 236L787.5 246.5L781 253.5L773.5 262L759.5 273L746.5 281L734.5 289L716 302.5L712 306.5L708.5 310.5L706 312.5L706.5 313L707 315.5L706.5 320.5L703.5 324.5L699.5 329.5L694.5 333L691.5 333.5L688.5 335L684 337L682 339.5L680.5 340L678 341.5L677 343.5L675 347.5L674 352V356.5V361L675 364.5L674 369V377.5Z" stroke="black"/>
+                <path id="frontal" class="brain-part" d="M214.5 451V459V461.5H212.5H203H194H185.5L179 464L171.5 465.5L164.5 469L158.5 471L150 474L143.5 476.5L135.5 478L127 479.5H117H106.5L98 476.5L94.5 474L91 469L96.5 465.5L102 464L111 463L120 461.5L130.5 456.5L135.5 452V447.5L128.5 442L114 437.5L103 438.5L91 442L79.5 444.5H71L59.5 442L52 438.5C50.5 437.167 47.3 434.4 46.5 434C45.7 433.6 41.8333 430.833 40 429.5L35.5 424.5L32 417L27.5 409L23 401L17.5 392.5L12 384.5L8 378L3.5 369.5L1.5 361L0.5 351V342.5L1.5 334.5L3.5 325L7 315L10 306L12 297.5V289.5V283.5V275.5L14 266L17 259L20 249.5L24 242L29 234L36.5 226L43.5 218.5L50.5 211.5L55.5 205L57.5 199.5V195L59 188L61.5 181.5L65 175L68.5 168L73 162L79 155L84.5 150L88 145.5L95 139L102.5 133.5L109.5 128.5L116 125.5L122.5 121L130.5 118L139.5 114.5L145 111L150 107.5L154 102.5L157.5 97.5L162.5 92.5L167.5 88.5L173 86.5L178.5 83.5L183.5 80.5L190 78L196 74.5L200.5 70.5L204.5 64.5L209.5 58.5L215 54.5L221.5 50L228 47.5L236 44L243.5 40.5L252 36.5L260 33L268 29L274 26L281 22.5L288 20L295 17.5L301.5 14.5L309.5 12.5L317 11.5H323H329H336.5L345 10.5L352 9.5H355.5L358.5 5L364 3L369.5 1.5L377.5 0.5H385.5H393L400 1.5L406 3L411.5 5L418.5 7.5L422.5 9.5L425.5 11.5L427.5 16L429.5 22.5L430.5 31.5L429.5 39L427.5 45.5L424 51.5L421.5 56L416 62.5L411.5 67.5L407 73.5L402 79C400.667 80.5 397.8 83.6 397 84C396.2 84.4 393.333 87.8333 392 89.5L388 95L384.5 101.5L381.5 106L380 112.5L377.5 120.5V126V130V135.5L378.5 140.5L380 144.5L384.5 152L390 153.5L395.5 155.5L397 163L395.5 172.5L393.5 179.5L390 187.5L384.5 192.5L377.5 194.5L374 197.5L370.5 202L367 207.5L363 214.5L360 220L358.5 227V235.5V242L360 249L364.5 256L369 262L374 267L377.5 273.5V280V288V294H374L369 290.5L364.5 286.5L360 284H354L348 286.5H343L337.5 290.5L335.5 294L333.5 300.5L330 306L322.5 308.5L316 311L308 314L302 317.5H296L290.5 320.5L285.5 325.5L280.5 331L276 335.5L273.5 340.5L270.5 347.5L268 354L266 358L261.5 363.5L256.5 369L252.5 374L247.5 378L243 383.5L237 388.5L232 392.5L225.5 397L220.5 405.5L217.5 413L214.5 424V434V443.5V451Z" stroke="black"/>
+                <path id="temporal" class="brain-part" d="M215.5 453.5V461L216.5 462L218 464.5V469L212.5 474L207.5 481V490L208.5 499L212.5 509.5L215.5 517.5L222.5 526.5L228.5 533.5L236 537.5L243 541.5L251 545L264.5 547.5H273.5L282 546L286.5 544.5L289.5 544L292 544.5L293 547.5L295 552L300 559.5L307 564.5L319.5 567.5L331.5 567H346L371 563.5L384 559.5L393 553.5L396 545L396.5 536C397.5 535.833 399.6 535.5 400 535.5H404.5L415.5 534.5L426.5 533.5L436.5 529.5L445 523.5C446 521.667 448.1 517.8 448.5 517C448.9 516.2 450 513.333 450.5 512L454 505L457 497L458.5 491L463 485.5L470.5 478L475.5 473.5L482 469L489 466.5L497 462.5L501 458.5L505.5 452.5L508.5 446L512.5 441.5L517.5 443.5L522 446L526.5 448.5L534 450.5L539.5 452H545.5L555.5 451.5L563.5 450.5L568 449.5L572.5 448.5L578.5 446.5L586.5 443.5L591 442.5L595 441L601 439L604.5 436.5L612.5 433.5L615.5 431.5L621 429L625.5 427.5C626.833 427.167 629.6 426.5 630 426.5C630.5 426.5 633 426 634.5 425.5C636 425 639 424.5 640 424.5C640.8 424.5 644 422.833 645.5 422L651 418.5L655 416C656.667 415 660.1 412.9 660.5 412.5C660.9 412.1 662.667 410 663.5 409L666.5 405L668.5 401C668.833 399.667 669.6 396.8 670 396C670.5 395 671.5 392 671.5 391.5C671.5 391 672.5 387 672.5 386.5V383C672.833 380.667 673.5 375.9 673.5 375.5V370C673.833 368.167 674.4 364.3 674 363.5C673.6 362.7 673.5 360.167 673.5 359V352.5C673.5 351.5 674.5 348 674.5 347.5C674.5 347 676.5 344 676.5 343C676.5 342 680 339.5 681 339.5C681.8 339.5 683 337.5 683.5 336.5C685 335.833 688.2 334.4 689 334C690 333.5 693.5 332.5 694 332.5C694.4 332.5 697.5 330.167 699 329L703 324.5L704 322.5L705.5 321C705.9 320.6 706.333 319.5 706.5 319V316.5V313.5L705 312.5H703H700.5H698L693.5 313.5H689.5L685 314L681.5 314.5H678H672H666H660.5H654L647 314H643L637.5 313.5L633 311.5L630 310L626.5 309L620.5 306L616 304.5L610.5 303.5L605 303H600.5H596.5H592.5L587 302L582.5 301L578.5 298.5L575.5 297L571 294L565.5 291L561 287.5L558 283.5L555.5 279C554.833 277.333 553.4 273.8 553 273C552.5 272 552 268.5 551.5 268C551 267.5 551 263.5 550.5 262.5C550.1 261.7 550 258.833 550 257.5V252V247.5L549 242.5L547.5 239L543.5 236.5L540 235.5L536 235L533.5 234L531 232.5L527 232H523L518.5 234L516 237L509.5 240.5L506.5 242.5L497 246H490H485.5L478 246.5H471.5H465.5L462.5 244L457.5 242.5L451 244L442 246.5L436 248.5L429.5 251L424.5 254L416 258.5L410 262.5L403.5 266L400 270L394 270.5L388 269H382L378.5 270.5L377.5 274V278V282.5V286.5V290.5V294L373.5 293.5L371 292L368.5 289.5L366.5 287.5L363.5 285.5L359.5 284H355.5L351 285.5L348 286.5H345L342 287.5L338.5 290.5L336 293.5L334.5 298.5L333 302L330.5 306L327.5 307.5L321.5 309.5L317 311L312 313L307 315L301 317L294.5 318.5L288.5 322.5L284 328.5L276 336L271.5 345.5L267.5 354L263.5 361L258 367L252.5 373L247 378.5L239.5 385.5L233 391.5L223.5 401.5L219.5 409.5L217 417.5L215.5 427V437V444.5V453.5Z" stroke="black"/>
+                <path id="parietal" class="brain-part" d="M361.5 251L368 260L372 264.5L375.5 268.5L376.5 270.5L377.5 272.5L378 271L378.5 270L382.5 268.5H388L393.5 270L400 269.5L400.5 268.5L403.5 265L410 262L414 259.5L421 255.5L429.5 250.5L432 249.5L453 243L457.5 242L462.5 243.5L465.5 246H481L486.5 245.5H497L505.5 242.5L508.5 240.5L512.5 238.5L515.5 236.5L518 234L520.5 232.5L523.5 231.5H527.5L531.5 232L536.5 234.5L540 235L543.5 236L548 239L549.5 243L550.5 248V252.5V256.5V260.5L551.5 263.5V267L552.5 269L553.5 272.5L556 279L558.5 283L561.5 287L564 289L569 292L573.5 295L578 297.5L583 300.5L592 302.5H597.5H605L613 303.5L620 305.5L624.5 307.5L630 309.5L637.5 313L642 313.5L652.5 314H670H675H682L685 313.5L688.5 313H692H694.5L697.5 312.5H700.5H705.5C705.9 312.5 711.333 306.5 714 303.5L724.5 294.5L753 276L766.5 267L777 257.5L783.5 250.5L790.5 242L794 237L797.5 226.5L799 224L800 220.5V217V212V208.5H798L797 204V198V192.5L798 185.5L799 181L802 176L803.5 172.5H805V175L804.5 179.5L805 183H806.5L810.5 179L813.5 176L816 173L816.5 171.5L814.5 165.5C814.167 163.333 813.5 158.8 813.5 158C813.5 157.2 812.833 154 812.5 152.5L811 146L808 139.5L801.5 131L792.5 123.5L782.5 116.5L773.5 112L770 110.5L766.5 109L758.5 107.5L754 105L745.5 99.5L732.5 91L728.5 89.5L723.5 86L718 83L713 78L708.5 73L702.5 67L695 60.5L690.5 58L683.5 55L672.5 51L665 48.5L656.5 46.5L648.5 46L641 45.5L636 44.5L631.5 41.5L627 39L622 36L616 33.5L610.5 31.5L604.5 30L596.5 29L589 28.5H581L578 27L574.5 25L570 21.5L565 19.5H560.5H556H551L545.5 21.5L539 22.5L535 21L532 18.5L530 14.5L528 12L525 11L520.5 10.5H516L511.5 10L507.5 9.5L503.5 7.5L498 5.5L493.5 4L488.5 2.5L481 1L474 0.5H468.5H460L452.5 1.5L445.5 3.5L437.5 5.5L431 7L425 10L426.5 12.5L428 16.5L430 21.5L430.5 27.5V35.5L429 43L425 51L418.5 60L411.5 68L406.5 75L400.5 81.5L394.5 86.5L390 93L386 100L382 106.5L380 114.5L378 120.5V127.5L377.5 135L379 139.5L380.5 144.5L385 151.5L395.5 154.5L396 156.5L397.5 162.5V165.5L396.5 170.5L395 175.5L393.5 181L390.5 187.5L388 190L384.5 193L378 194.5L375 197L372.5 200L370 203.5L367.5 207.5L366 210.5L362.5 216.5L360.5 220.5L359.5 226.5V235V244.5L361.5 251Z" stroke="black"/>
+                <path id="cerebellum" class="brain-part" d="M522 447L513 443L509 447L504.5 455L500 461.5L492 465L484.5 469L479.5 470.5L474.5 474.5L469 480H472H481.5L493.5 483.5L503.5 490.5L509 493L517.5 515L520.5 523L528 536L533.5 543.5L535 549.5V556V563L538 569.5L542 575.5L552 580.5C552.667 581.333 554 583.1 554 583.5C554 583.9 554.667 585.333 555 586L556.5 593.5L558 597L560.5 601.5C561.333 602.167 563.1 603.5 563.5 603.5C563.9 603.5 566.333 605.5 567.5 606.5L570 610L572.5 616.5L580.5 628.5L592.5 640.5L604 646.5L618.5 648.5L635 649.5C637.667 649.833 642.8 650.5 642 650.5H653.5L662.5 649.5L671 648L682.5 646.5L686.5 642.5L693 636.5L703 625.5L711.5 617.5L716 609.5L723.5 603.5H735L739.5 601L749 595.5L760 594.5L764 592.5L770 587.5L777 581L784.5 579L790 575.5L793.5 568.5L797.5 561.5L802.5 558L809.5 553.5L812.5 549.5L815 543L819.5 535.5L823.5 531L827 527.5L827.5 523L828.5 513L829.5 508L835.5 498L837 491.5V485.5V476.5L837.5 470.5L839 462L840.5 451L841.5 444L842.5 438V430.5L841.5 422.5L839 417.5L834.5 410L833 407.5V404.5L830.5 405.5L821.5 408.5L814.5 411L805.5 413.5L797 413L792 411L786 409.5H779.5H773L768 411L761.5 415L752.5 418L744.5 419H738H725L719.5 418L711.5 413L707 408L702 401.5L698 397.5L692 393L687 391L679.5 390L673.5 389L672 393L668.5 403L661 413L650 420L637.5 425.5L625 428.5L614.5 433L604.5 437L587 443L568.5 450L550 451.5H533.5L522 447Z" stroke="black"/>
+                <path id="spinal" class="brain-part" d="M713.5 737L718 732.5L712 711.5L705 692L699.5 675L692 656L687.5 643.5L686.5 644L681.5 647.5L677.5 648L666 649.5L649.5 651L639.5 650.5L624.5 649L611.5 648L602.5 646.5L592.5 641L585.5 634L581.5 630L572 617L569.5 610.5L566 606L561 602.5L556.5 594.5L555 587L552.5 581.5L550 580L541 575L534.5 562.5V556V548.5L533.5 544L527.5 536L524 529.5L518.5 519.5L514 506.5L510.5 497.5L508.5 493L505.5 491.5C504 490.667 500.9 489 500.5 489C500.1 489 497.333 487 496 486L493 483.5L489.5 482.5L483.5 480.5H477H469.5L465 482.5L460.5 489L457 496.5L454.5 505L450.5 514L442.5 525.5L465 541.5L485 554.5L499 568.5L517 588.5L535 608L552 624L571.5 639.5L593.5 656L612 670.5L631.5 690L647 711.5L653 720.5L659.5 730.5L661.5 741L667.5 743.5H677H689.5L705 741L713.5 737Z" stroke="black"/>
+         </svg>
+    </div>
+
+    <div id="data-node">
+        <div class="node-label">Biological Archive</div>
+        <div class="node-name" id="node-title">Select Region</div>
+        <div class="node-desc" id="node-info">Navigate the cursor to illuminate the neural pathways.</div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">GitHub</a>
+            <span class="footer-sep">|</span>
+            <a href="about.html">About</a>
+        </div>
+        <p class="footer-copy">© 2026 Neuralis Archivum. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const library = {
+            frontal: { t: "Frontal lobe", d: "The executive center; regulating social conduct, complex logic, and the spirit of resolve." },
+            parietal: { t: "Parietal lobe", d: "The navigator; integrating sensory information to map the body's place in the physical world." },
+            temporal: { t: "Temporal lobe", d: "The archive of sound and memory; where language is deciphered and the past is preserved." },
+            occipital: { t: "Occipital lobe", d: "The optical laboratory; processing the light of the world into the images of the mind." },
+            cerebellum: { t: "Cerebellum", d: "The silent rhythmic master; coordinating balance, posture, and the grace of movement." },
+            spinal: { t: "Spinal cord", d: "The vital bridge; controlling the automated breath and the beating of the heart." }
+        }; 
+        /* This library object holds the titles and descriptions for each brain region, which are displayed in the data node when the user hovers over the corresponding area in the SVG. */
+
+        const node = document.getElementById('data-node');
+        const nTitle = document.getElementById('node-title');
+        const nInfo = document.getElementById('node-info');
+        
+        document.querySelectorAll('.brain-part').forEach(part => {
+            part.addEventListener('mouseenter', () => {
+                const entry = library[part.id];
+                nTitle.innerText = entry.t;
+                nInfo.innerText = entry.d;
+                node.classList.add('active');
+            });
+
+            part.addEventListener('mouseleave', () => {
+                node.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

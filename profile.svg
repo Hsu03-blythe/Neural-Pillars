@@ -1,0 +1,26 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Profile placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1510" />
+      <stop offset="100%" stop-color="#3d3225" />
+    </linearGradient>
+    <linearGradient id="highlight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8dfd1" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#e8dfd1" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" rx="32" fill="url(#bg)" />
+
+  <circle cx="200" cy="140" r="84" fill="url(#highlight)" opacity="0.85" />
+  <circle cx="200" cy="140" r="68" fill="#1a1510" />
+  <path d="M160 220c20 18 48 18 68 0" stroke="#e8dfd1" stroke-width="12" stroke-linecap="round" fill="none" />
+
+  <path d="M114 294c0-42 46-76 86-76s86 34 86 76" fill="#1a1510" />
+  <path d="M132 298c0-26 34-46 68-46s68 20 68 46" fill="#e8dfd1" opacity="0.15" />
+
+  <circle cx="160" cy="132" r="12" fill="#e8dfd1" opacity="0.84" />
+  <circle cx="240" cy="132" r="12" fill="#e8dfd1" opacity="0.84" />
+
+  <path d="M164 180c12 10 44 10 56 0" stroke="#e8dfd1" stroke-width="10" stroke-linecap="round" opacity="0.75" />
+</svg>

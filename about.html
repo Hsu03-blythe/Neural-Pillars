@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About · Neuralis Archivum</title>
+    <!-- To get desired font styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --parchment: #e8dfd1;
+            --ink-dark: #1a1510;
+            --ink-red: #8b0000;
+            --bg-deep: #0a0a0a;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg-deep);
+            color: var(--parchment);
+            font-family: 'EB Garamond', serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            padding: 60px 20px 20px;
+            text-align: center;
+            border-bottom: 1px double var(--ink-red);
+            margin-bottom: 40px;
+            width: 80%;
+        }
+
+        .title-main {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2rem;
+            font-style: italic;
+            letter-spacing: 3px;
+            margin: 0;
+        }
+
+        main {
+            width: 80%;
+            max-width: 960px;
+            padding-bottom: 60px;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .section p {
+            line-height: 1.7;
+            color: #c8bfa7;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: minmax(220px, 260px) 1fr;
+            gap: 2rem;
+            align-items: start;
+            margin-top: 1.5rem;
+        }
+
+        .profile-photo {
+            width: 100%;
+            max-width: 260px;
+            border-radius: 18px;
+            border: 2px solid rgba(232, 223, 209, 0.4);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
+            background: rgba(255,255,255,0.05);
+            display: block;
+        }
+
+        .profile-details h3 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .profile-details p {
+            margin-bottom: 1rem;
+        }
+
+        .cta {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.6rem;
+            background: rgba(139, 0, 0, 0.9);
+            color: var(--parchment);
+            text-decoration: none;
+            border-radius: 999px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border: 1px solid rgba(232, 223, 209, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(255, 255, 255, 0.12);
+        }
+
+        footer {
+            width: 100%;
+            background: linear-gradient(90deg, #1a1510 0%, #3d3225 100%);
+            color: #e8dfd1;
+            text-align: center;
+            padding: 32px 0 18px 0;
+            margin-top: 60px;
+            font-family: 'EB Garamond', serif;
+            border-top: 1.5px double var(--ink-red);
+            box-shadow: 0 -8px 40px #000a inset;
+        }
+
+        .footer-links {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--parchment);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin: 0 10px;
+            transition: color 0.2s;
+            letter-spacing: 1px;
+        }
+
+        .footer-links a:hover {
+            color: var(--ink-red);
+            text-shadow: 0 0 6px #fff2;
+        }
+
+        .footer-sep {
+            color: #a89f8d;
+            font-size: 1.2rem;
+            margin: 0 4px;
+        }
+
+        .footer-copy {
+            font-size: 0.95rem;
+            color: #a89f8d;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 820px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+
+            .profile-photo {
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="title-main">NEURALIS ARCHIVUM</h1>
+        <p>A study of the cerebral topography and its functional divisions.</p>
+    </header>
+
+    <main>
+        <section class="section">
+            <h2>Why this exists</h2>
+            <p>
+                Neuralis Archivum is a personal exploration of how the brain maps to the stories we tell ourselves.
+                This space was created to encourage anyone who visits to spend a moment of reflection on the complexity of our biology.
+                
+            </p>
+            <p>
+                My goal is to bridge the gap between intricate neuroscience and minimalist design-exploring the six pillars of the human brain, one region at a time.
+            </p>
+            <a class="cta" href="index.html">Return to the Archive</a>
+        </section>
+
+        <section class="section">
+            <h2>About Me</h2>
+            <div class="profile-grid">
+                <img class="profile-photo" src="profile.svg" alt="Profile placeholder photo">
+                <div class="profile-details">
+                    <h3>Hi! I'm Hsu Shwe Yee Htet</h3>
+                    <p>
+                        I’m a lifelong learner who loves the crossroads between neuroscience, design, and coding. I created this simple project to test myself on building a simple static site with my passionate interest in brain science.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+            <span class="footer-sep">|</span>
+            <a href="index.html">Home</a>
+        </div>
+        <p class="footer-copy">© 2026 Neuralis Archivum. All rights reserved.</p>
+    </footer>
+</body>
+</html>
