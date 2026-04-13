@@ -3,21 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Pillars</title>
-    <!-- To get desired font styles -->
+    <title>The Anatomical Archive</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
-        /* I chose this color to look like an old parchment, which gives a vintage and scholarly feel to the website. It also provides a warm contrast against the dark background, making the text easier to read while maintaining the overall aesthetic of an ancient archive. */
-        :root {
-            --parchment: #e8dfd1;
-            --ink-dark: #1a1510;
-            --ink-red: #8b0000;
-            --bg-deep: #0a0a0a;
+     :root {
+    /* --- The Archive Highlights --- */
+            /* Chromatic Dark Palette */
+            --parchment: #f2e9dc;
+            --parchment-muted: #8a8175;
+            --ink-red: #a30000;
+            
+            /* Darks */
+            --bg-deep: #0a0c10;      /* Background */
+            --bg-surface: #1b1412;   /* Section Backgrounds */
+            --bg-overlay: #111413;   /* Footer */
+            --ink-border: #4a3f35;   /* Frames and Borders */
+            
+            --smooth: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
+        /* --- Global Reset & Base --- */
         body {
-            margin: 0;
+            margin: 0; 
             background: var(--bg-deep);
             color: var(--parchment);
             font-family: 'EB Garamond', serif;
@@ -25,9 +33,26 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            line-height: 1.6;
         }
 
-        /* Header section */
+        header, footer, .stage {
+            box-sizing: border-box;
+        }
+
+        /* --- Typography Hierarchy --- */
+        .title-main, .node-name {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .title-main {
+            font-size: 3.2rem;
+            font-style: italic;
+            letter-spacing: 3px;
+            margin: 0 0 10px 0;
+        }
+
+        /* --- Layout Sections --- */
         header {
             padding: 60px 20px;
             text-align: center;
@@ -36,76 +61,61 @@
             width: 80%;
         }
 
-        .title-main {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 3.2rem;
-            font-style: italic;
-            letter-spacing: 3px;
-            margin: 0;
-        }
-
-        /* --- The Brain Visualization --- */
-       
         .stage {
-            position: relative; /* This is needed to position the data node absolutely within this container */
-            width: 40vw;
+            position: relative;
+            width: 80vw;
+            max-width: 600px;
             padding: 40px;
-            background: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
-            border-radius: 50%;
-            box-shadow: inset 0 0 100px #000;
+            margin-bottom: 40px;
+            background: radial-gradient(circle, var(--bg-surface) 0%, var(--bg-deep) 100%);
+            border-radius: 15%; 
+            border: 1px solid var(--ink-border);
+            box-shadow: inset 0 0 80px #000;
         }
 
-        svg { width: 100%; height: auto; overflow: visible; } /* this allows the SVG to scale responsively while maintaining its aspect ratio, and ensures that any parts of the brain that extend beyond the initial viewBox are still visible. */
+        /* --- SVG Interaction --- */
+        svg { 
+            width: 100%; 
+            height: auto; 
+            overflow: visible; 
+        }
 
         .brain-part {
-            fill: var(--ink-dark);
+            fill: #1a1510;
             stroke: var(--parchment);
             stroke-width: 1;
             stroke-linejoin: round; 
-            filter: drop-shadow(0 0 1px rgba(0,0,0,1));
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            opacity: 0.25;
             cursor: crosshair;
-            opacity: 0.2; /* This is the ideal opacity or its will be overlapped */
-            z-index: 1;
+            transition: all var(--smooth);
         }
 
-        /* --- Interaction: The "Illumination" --- */
         .brain-part:hover {
             opacity: 1;
             fill: #1a1a1a;
             stroke: #ffffff; 
-            stroke-width: 4;
-            filter: 
-                drop-shadow(0 0 2px #fff) 
-                drop-shadow(0 0 15px var(--ink-red));
-            
-            transform: scale(1.005); /* Slightly enlarge the hovered part for emphasis */
-            z-index: 2;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 10px var(--ink-red));
+            transform: scale(1.01);
         }
 
-        
+        /* --- Data Node (Information UI) --- */
         #data-node {
             position: fixed;
             bottom: 50px;
-            left: 30%;
-            transform: translateX(50%) translateY(20px); 
+            left: 25%;
+            transform: translateX(-50%) translateY(20px); 
             width: 300px;
             max-width: 40vw;
             text-align: center;
-            background: rgba(10, 10, 10, 0.98);
-            border: 1px solid #3d3225;
+            background: var(--bg-overlay);
+            border: 1px solid var(--ink-border);
             padding: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-            
-            /* I added this because there were ghost text and cursor interaction issues when the node was hidden. This way, the node is still there but completely non-interactive and invisible until activated.   */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             opacity: 0;
             visibility: hidden; 
             pointer-events: none; 
-            
-            transition: 
-                opacity 0.4s ease, 
-                transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                visibility 0.4s;
+            transition: opacity var(--smooth), transform var(--smooth), visibility var(--smooth);
         }
 
         #data-node.active {
@@ -123,58 +133,49 @@
         }
 
         .node-name {
-            font-family: 'Cormorant Garamond', serif;
             font-size: 1.5rem;
             margin-bottom: 10px;
-            border-bottom: 1px solid #3d3225;
+            border-bottom: 1px solid var(--ink-border);
             display: inline-block;
             padding: 0 20px 5px;
         }
 
         .node-desc {
             font-size: 1rem;
-            line-height: 1.6;
-            color: #a89f8d;
+            color: var(--parchment-muted);
             font-style: italic;
         }
 
+        /* --- Footer --- */
         footer {
             width: 100%;
-            margin: 60px auto 0;
-            padding: 32px 0 18px 0;
-            background: rgba(10, 10, 10, 0.7);
-            color: var(--parchment);
+            margin-top: auto; /* Pushes footer to bottom */
+            padding: 40px 0 20px;
+            background: var(--bg-overlay);
             text-align: center;
-            font-family: 'EB Garamond', serif;
-            border-top: 1px solid rgba(139, 0, 0, 0.6);
-            box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.65);
+            border-top: 1px solid var(--ink-border);
         }
-        .footer-links {
-            margin-bottom: 10px;
-        }
+
         .footer-links a {
             color: var(--parchment);
             text-decoration: none;
-            font-weight: 500;
             font-size: 1.1rem;
             margin: 0 10px;
             transition: color 0.2s;
-            letter-spacing: 1px;
         }
+
         .footer-links a:hover {
             color: var(--ink-red);
-            text-shadow: 0 0 6px #fff2;
         }
+
         .footer-sep {
-            color: #a89f8d;
-            font-size: 1.2rem;
-            margin: 0 4px;
+            color: var(--parchment-muted);
         }
+
         .footer-copy {
-            font-size: 0.95rem;
-            color: #a89f8d;
-            margin: 0;
-            letter-spacing: 1px;
+            font-size: 0.9rem;
+            color: var(--parchment-muted);
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -192,7 +193,7 @@
                 <path id="parietal" class="brain-part" d="M361.5 251L368 260L372 264.5L375.5 268.5L376.5 270.5L377.5 272.5L378 271L378.5 270L382.5 268.5H388L393.5 270L400 269.5L400.5 268.5L403.5 265L410 262L414 259.5L421 255.5L429.5 250.5L432 249.5L453 243L457.5 242L462.5 243.5L465.5 246H481L486.5 245.5H497L505.5 242.5L508.5 240.5L512.5 238.5L515.5 236.5L518 234L520.5 232.5L523.5 231.5H527.5L531.5 232L536.5 234.5L540 235L543.5 236L548 239L549.5 243L550.5 248V252.5V256.5V260.5L551.5 263.5V267L552.5 269L553.5 272.5L556 279L558.5 283L561.5 287L564 289L569 292L573.5 295L578 297.5L583 300.5L592 302.5H597.5H605L613 303.5L620 305.5L624.5 307.5L630 309.5L637.5 313L642 313.5L652.5 314H670H675H682L685 313.5L688.5 313H692H694.5L697.5 312.5H700.5H705.5C705.9 312.5 711.333 306.5 714 303.5L724.5 294.5L753 276L766.5 267L777 257.5L783.5 250.5L790.5 242L794 237L797.5 226.5L799 224L800 220.5V217V212V208.5H798L797 204V198V192.5L798 185.5L799 181L802 176L803.5 172.5H805V175L804.5 179.5L805 183H806.5L810.5 179L813.5 176L816 173L816.5 171.5L814.5 165.5C814.167 163.333 813.5 158.8 813.5 158C813.5 157.2 812.833 154 812.5 152.5L811 146L808 139.5L801.5 131L792.5 123.5L782.5 116.5L773.5 112L770 110.5L766.5 109L758.5 107.5L754 105L745.5 99.5L732.5 91L728.5 89.5L723.5 86L718 83L713 78L708.5 73L702.5 67L695 60.5L690.5 58L683.5 55L672.5 51L665 48.5L656.5 46.5L648.5 46L641 45.5L636 44.5L631.5 41.5L627 39L622 36L616 33.5L610.5 31.5L604.5 30L596.5 29L589 28.5H581L578 27L574.5 25L570 21.5L565 19.5H560.5H556H551L545.5 21.5L539 22.5L535 21L532 18.5L530 14.5L528 12L525 11L520.5 10.5H516L511.5 10L507.5 9.5L503.5 7.5L498 5.5L493.5 4L488.5 2.5L481 1L474 0.5H468.5H460L452.5 1.5L445.5 3.5L437.5 5.5L431 7L425 10L426.5 12.5L428 16.5L430 21.5L430.5 27.5V35.5L429 43L425 51L418.5 60L411.5 68L406.5 75L400.5 81.5L394.5 86.5L390 93L386 100L382 106.5L380 114.5L378 120.5V127.5L377.5 135L379 139.5L380.5 144.5L385 151.5L395.5 154.5L396 156.5L397.5 162.5V165.5L396.5 170.5L395 175.5L393.5 181L390.5 187.5L388 190L384.5 193L378 194.5L375 197L372.5 200L370 203.5L367.5 207.5L366 210.5L362.5 216.5L360.5 220.5L359.5 226.5V235V244.5L361.5 251Z" stroke="black"/>
                 <path id="cerebellum" class="brain-part" d="M522 447L513 443L509 447L504.5 455L500 461.5L492 465L484.5 469L479.5 470.5L474.5 474.5L469 480H472H481.5L493.5 483.5L503.5 490.5L509 493L517.5 515L520.5 523L528 536L533.5 543.5L535 549.5V556V563L538 569.5L542 575.5L552 580.5C552.667 581.333 554 583.1 554 583.5C554 583.9 554.667 585.333 555 586L556.5 593.5L558 597L560.5 601.5C561.333 602.167 563.1 603.5 563.5 603.5C563.9 603.5 566.333 605.5 567.5 606.5L570 610L572.5 616.5L580.5 628.5L592.5 640.5L604 646.5L618.5 648.5L635 649.5C637.667 649.833 642.8 650.5 642 650.5H653.5L662.5 649.5L671 648L682.5 646.5L686.5 642.5L693 636.5L703 625.5L711.5 617.5L716 609.5L723.5 603.5H735L739.5 601L749 595.5L760 594.5L764 592.5L770 587.5L777 581L784.5 579L790 575.5L793.5 568.5L797.5 561.5L802.5 558L809.5 553.5L812.5 549.5L815 543L819.5 535.5L823.5 531L827 527.5L827.5 523L828.5 513L829.5 508L835.5 498L837 491.5V485.5V476.5L837.5 470.5L839 462L840.5 451L841.5 444L842.5 438V430.5L841.5 422.5L839 417.5L834.5 410L833 407.5V404.5L830.5 405.5L821.5 408.5L814.5 411L805.5 413.5L797 413L792 411L786 409.5H779.5H773L768 411L761.5 415L752.5 418L744.5 419H738H725L719.5 418L711.5 413L707 408L702 401.5L698 397.5L692 393L687 391L679.5 390L673.5 389L672 393L668.5 403L661 413L650 420L637.5 425.5L625 428.5L614.5 433L604.5 437L587 443L568.5 450L550 451.5H533.5L522 447Z" stroke="black"/>
                 <path id="spinal" class="brain-part" d="M713.5 737L718 732.5L712 711.5L705 692L699.5 675L692 656L687.5 643.5L686.5 644L681.5 647.5L677.5 648L666 649.5L649.5 651L639.5 650.5L624.5 649L611.5 648L602.5 646.5L592.5 641L585.5 634L581.5 630L572 617L569.5 610.5L566 606L561 602.5L556.5 594.5L555 587L552.5 581.5L550 580L541 575L534.5 562.5V556V548.5L533.5 544L527.5 536L524 529.5L518.5 519.5L514 506.5L510.5 497.5L508.5 493L505.5 491.5C504 490.667 500.9 489 500.5 489C500.1 489 497.333 487 496 486L493 483.5L489.5 482.5L483.5 480.5H477H469.5L465 482.5L460.5 489L457 496.5L454.5 505L450.5 514L442.5 525.5L465 541.5L485 554.5L499 568.5L517 588.5L535 608L552 624L571.5 639.5L593.5 656L612 670.5L631.5 690L647 711.5L653 720.5L659.5 730.5L661.5 741L667.5 743.5H677H689.5L705 741L713.5 737Z" stroke="black"/>
-         </svg>
+            </svg>
     </div>
 
     <div id="data-node">
@@ -203,7 +204,7 @@
 
     <footer>
         <div class="footer-links">
-            <a href= "https://github.com/">GitHub</a>
+            <a href="#">GitHub</a>
             <span class="footer-sep">|</span>
             <a href="about.html">About</a>
         </div>
@@ -219,7 +220,6 @@
             cerebellum: { t: "Cerebellum", d: "The silent rhythmic master; coordinating balance, posture, and the grace of movement." },
             spinal: { t: "Spinal cord", d: "The vital bridge; controlling the automated breath and the beating of the heart." }
         }; 
-        /* This library object holds the titles and descriptions for each brain region, which are displayed in the data node when the user hovers over the corresponding area in the SVG. */
 
         const node = document.getElementById('data-node');
         const nTitle = document.getElementById('node-title');
@@ -228,9 +228,11 @@
         document.querySelectorAll('.brain-part').forEach(part => {
             part.addEventListener('mouseenter', () => {
                 const entry = library[part.id];
-                nTitle.innerText = entry.t;
-                nInfo.innerText = entry.d;
-                node.classList.add('active');
+                if(entry) {
+                    nTitle.innerText = entry.t;
+                    nInfo.innerText = entry.d;
+                    node.classList.add('active');
+                }
             });
 
             part.addEventListener('mouseleave', () => {
